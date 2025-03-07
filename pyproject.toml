@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "xai-pettingzoo"
+version = "0.1.0"
+description = ""
+authors = ["eirik <eirik@reiestad.no>"]
+readme = "README.md"
+packages = [{ include = "utils" }]
+
+[tool.poetry.dependencies]
+tensorflow-probability = "^0.19.0"
+pillow = "^9.4.0"
+python = "^3.11"
+wandb = "^0.19.8"
+pettingzoo = "^1.24.3"
+torch = "^2.6.0"
+supersuit = "^3.9.3"
+sb3 = "^0.1"
+stable-baselines3 = "^2.5.0"
+pygame = "^2.6.1"
+tensorboard = "^2.19.0"
+ray = { extras = ["tune"], version = "2.7.0" }
+pymunk = "^6.11.1"
+dm-tree = "^0.1.9"
+scipy = "^1.15.2"
+lz4 = "^4.4.3"
+opencv-python = "^4.11.0.86"
+shap = "^0.47.0"
+tensorflow = "^2.18.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
