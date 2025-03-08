@@ -2869,6 +2869,20 @@ files = [
 ]
 
 [[package]]
+name = "sb3-contrib"
+version = "2.5.0"
+description = "Contrib package of Stable Baselines3, experimental code."
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "sb3_contrib-2.5.0-py3-none-any.whl", hash = "sha256:ec52c3b7562e902183b6030c4554c22953c8654fe5980202759238abadc886fe"},
+    {file = "sb3_contrib-2.5.0.tar.gz", hash = "sha256:ea57c47695ad3bebaff016dbb8047b5aab0836e000b353912a692bbe910388d0"},
+]
+
+[package.dependencies]
+stable_baselines3 = ">=2.5.0,<3.0"
+
+[[package]]
 name = "scikit-learn"
 version = "1.6.1"
 description = "A set of python modules for machine learning and data mining"
@@ -3820,4 +3834,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "8f9b0499aaf7e84cd5afaaa3818632d0705c6174e0cbda0ba517f6591aa38015"
+content-hash = "6321ee72b921115ad1be2cfc65ff0c99c00101a382c3084886bb4862c22d07c8"

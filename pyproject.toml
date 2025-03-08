@@ -26,6 +26,7 @@ lz4 = "^4.4.3"
 opencv-python = "^4.11.0.86"
 shap = "^0.47.0"
 tensorflow = "^2.18.0"
+sb3-contrib = "^2.5.0"
 
 [build-system]
 requires = ["poetry-core"]

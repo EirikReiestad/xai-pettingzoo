@@ -13,10 +13,11 @@ import glob
 import logging
 import os
 import time
+from typing import Any
 
 import supersuit as ss
 from pettingzoo.butterfly import knights_archers_zombies_v10
-from stable_baselines3 import PPO
+from stable_baselines3 import DQN, PPO
 from stable_baselines3.ppo import CnnPolicy, MlpPolicy
 
 import wandb
@@ -52,7 +53,7 @@ def train(env_fn, steps: int = 10_000, seed: int | None = 0, **env_kwargs):
     env = ss.pettingzoo_env_to_vec_env_v1(env)
     env = ss.concat_vec_envs_v1(env, 8, num_cpus=1, base_class="stable_baselines3")
 
-    model = PPO(
+    model = DQN(
         CnnPolicy if visual_observation else MlpPolicy,
         env,
         verbose=1,
@@ -78,8 +79,16 @@ def train(env_fn, steps: int = 10_000, seed: int | None = 0, **env_kwargs):
 
     env.close()
 
+    return model
 
-def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwargs):
+
+def eval(
+    env_fn,
+    num_games: int = 100,
+    render_mode: str | None = None,
+    model: Any | None = None,
+    **env_kwargs,
+):
     # Evaluate a trained agent vs a random agent
     env = env_fn.env(render_mode=render_mode, **env_kwargs)
 
@@ -103,7 +112,8 @@ def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwa
         logging.info("Policy not found.")
         exit(0)
 
-    model = PPO.load(latest_policy)
+    if model is None:
+        model = DQN.load(latest_policy)
 
     rewards = {agent: 0 for agent in env.possible_agents}
 
@@ -142,14 +152,14 @@ if __name__ == "__main__":
     env_fn = knights_archers_zombies_v10
 
     # Set vector_state to false in order to use visual observations (significantly longer training time)
-    env_kwargs = dict(max_cycles=500, max_zombies=4, vector_state=True)
+    env_kwargs = dict(max_cycles=1000, max_zombies=4, vector_state=True)
 
     eval(env_fn, num_games=10, render_mode="human", **env_kwargs)
     # Train a model (takes ~5 minutes on a laptop CPU)
-    train(env_fn, steps=181_920, seed=None, **env_kwargs)
+    model = train(env_fn, steps=181_920, seed=None, **env_kwargs)
 
     # Evaluate 10 games (takes ~10 seconds on a laptop CPU)
-    eval(env_fn, num_games=10, render_mode=None, **env_kwargs)
+    eval(env_fn, num_games=10, render_mode=None, **env_kwargs, model=model)
 
     # Watch 2 games (takes ~10 seconds on a laptop CPU)
     eval(env_fn, num_games=2, render_mode="rgb_array", **env_kwargs)

@@ -14,7 +14,7 @@ import os
 import time
 
 import supersuit as ss
-from pettingzoo.mpe import simple_tag_v3, simple_v3
+from pettingzoo.mpe import simple_tag_v3, simple_v3, simple_spread_v3, simple_push_v3
 from stable_baselines3 import PPO
 
 import wandb
@@ -29,18 +29,19 @@ def train_mpe_supersuit(
     seed: int | None = 0,
     **env_kwargs,
 ):
-    experiment_name = f"mpe_{int(time.time())}"
-    run = wandb.init(
-        name=experiment_name,
-        project="mpe_test",
-        sync_tensorboard=True,
-        monitor_gym=True,
-        save_code=True,
-    )
     env = env_fn.parallel_env(**env_kwargs)
     env = ss.pad_observations_v0(env)
 
     env.reset(seed=seed)
+
+    experiment_name = f"mpe_{int(time.time())}"
+    run = wandb.init(
+        project=f"mpe_{str(env)}",
+        name=experiment_name,
+        sync_tensorboard=True,
+        monitor_gym=True,
+        save_code=True,
+    )
 
     logging.info(f"Starting training on {str(env.metadata['name'])}.")
 
@@ -121,14 +122,14 @@ def eval(env_fn, num_games: int = 100, render_mode: str | None = None, **env_kwa
 
 
 if __name__ == "__main__":
-    env_fn = simple_v3
-    env_kwargs = {}
+    env_fn = simple_push_v3
+    env_kwargs = dict(max_cycles=1000)
 
-    eval(env_fn, num_games=100, render_mode="human", **env_kwargs)
+    # eval(env_fn, num_games=100, render_mode="human", **env_kwargs)
 
     train_mpe_supersuit(
         env_fn,
-        steps=200_000,
+        steps=500_000,
         seed=0,
         **env_kwargs,
         render_mode="rgb_array",
